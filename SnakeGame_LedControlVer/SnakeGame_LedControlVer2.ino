@@ -1,4 +1,8 @@
+#include <MD_Parola.h>
+#include <MD_MAX72xx.h>
+#include <SPI.h>
 #include <LedControl.h>
+
 
 //Pines
 const int pinXJ = A0; //Pin del Analogico X del Joystick
@@ -10,7 +14,7 @@ const int button = 9; //Pin del Boton Pulsador
 const int buzzer = 8; //Pin del Buzzer
 
 //Variables
-const int anchoP = 32; //Ancho de la pantalla
+const int anchoP = 8; //Ancho de la pantalla
 const int altoP = 8; //Alto de la pantalla
 int sPosX, sPosY, cPosX, cPosY; //Posicion de la serpiente y de la comida en los ejes X e Y
 int puntos = 0; //Puntuacion del jugador
@@ -19,19 +23,19 @@ int direccion;//A que direccion va (arriba, abajo, izquierda, derecha)
 int colaX[300], colaY[300];//Tamaño maximo de las cola en ambos ejes
 bool isGameOver = false;//Comprobacion del gameover
 LedControl lC = LedControl(DIN, CS, CLK, 1);
-
-//esto es algo nuevo
+MD_Parola P = MD_Parola(MD_MAX72XX::FC16_HW, DIN, CLK, CS, 1);
 
 void setup(){
   //setPines();
   setLC();
+  printPantalla();
   setSnakePos();
   setComidaPos();
 }
 
 void setSnakePos(){
   /*Esta funcion establece la posicion inicial de la serpiente*/
-  sPosX = 16;
+  sPosX = 4;
   sPosY = 4;
 }
 
@@ -46,14 +50,31 @@ void setLC(){
   lC.shutdown(0, false);
   lC.setIntensity(0, 1);
   lC.clearDisplay(0);
+  P.begin();
+}
+
+void printPantalla(){
+  /*Esta función imprime una pantalla de inicio*/
+  P.print("Snake Game");
+  delay(1000);
 }
 
 void loop(){
+  boton_Reset();
   if(isGameOver == true) {
     gameOverP();
   }
   else{
     jugar();
+  }
+}
+
+
+void boton_Reset(){
+  /*Función que lee si el boton esta presionado. Si lo está, se reincian las variables*/
+  if(button == HIGH){
+    resetVariables();
+    delay(500);
   }
 }
 
@@ -155,12 +176,11 @@ void cambiarDirS(){
 
 void gameOverP(){
   /*Funcion que imprime una pantalla de game over*/
-  for(int i = 0; i < altoP; i++){
-    for(int j = 0; j < anchoP; j++){
-      prenderLed(j, i);
-      delay(300);
-    }
-  }
+  P.print("Game Over");
+  delay(1000);
+  P.print("Puntaje");
+  delay(1000);
+  P.print(puntos);
   resetVariables();
 }
 
