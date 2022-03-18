@@ -20,6 +20,8 @@ int colaX[300], colaY[300];//Tamaño maximo de las cola en ambos ejes
 bool isGameOver = false;//Comprobacion del gameover
 LedControl lC = LedControl(DIN, CS, CLK, 1);
 
+//esto es algo nuevo
+
 void setup(){
   //setPines();
   setLC();
