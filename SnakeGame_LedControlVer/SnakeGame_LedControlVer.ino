@@ -23,6 +23,7 @@ LedControl lC = LedControl(DIN, CS, CLK, 1);
 void setup(){
   //setPines();
   setLC();
+  hjhj;
   setSnakePos();
   setComidaPos();
 }
